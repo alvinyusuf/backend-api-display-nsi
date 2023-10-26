@@ -9,9 +9,7 @@ const response = require('../utils/response');
 module.exports = {
   getCurrentDowntime(req, res) {
     try {
-      const { conn } = req;
-
-      maintenaneModel.getCurrentDowntime(conn, (err, result) => {
+      maintenaneModel.getCurrentDowntime((err, result) => {
         if (err) {
           console.error(err);
           return res.status(500).json({ error: 'terjadi kesalahan pada database' });
@@ -33,10 +31,9 @@ module.exports = {
 
   getBeforeDowntime(req, res) {
     try {
-      const { conn } = req;
       const { bulan } = req.params;
 
-      maintenaneModel.getBeforeDowntime(conn, bulan, (err, result) => {
+      maintenaneModel.getBeforeDowntime(bulan, (err, result) => {
         if (err) {
           console.error(err);
           return res.status(500).json({ error: 'ada kesalahan query' });
@@ -63,9 +60,7 @@ module.exports = {
 
   getCurrentMachines(req, res) {
     try {
-      const { conn } = req;
-
-      maintenaneModel.getCurrentMachines(conn, (err, result) => {
+      maintenaneModel.getCurrentMachines((err, result) => {
         if (err) {
           console.error(err);
           return res.status(500).json({ error: 'terjadi kesalahan pada database' });
@@ -93,10 +88,8 @@ module.exports = {
 
   getHistoryDowntimes(req, res) {
     try {
-      const { conn } = req;
-
       let currentDowntime;
-      maintenaneModel.getCurrentDowntime(conn, (err, result) => {
+      maintenaneModel.getCurrentDowntime((err, result) => {
         if (err) {
           console.error(err);
           return res.status(500).json({ error: 'terjadi kesalahan pada database' });
@@ -110,7 +103,7 @@ module.exports = {
         };
       });
 
-      maintenaneModel.getHistoryDowntime(conn, (err, result) => {
+      maintenaneModel.getHistoryDowntime((err, result) => {
         if (err) {
           console.error(err);
           res.status(500).json({ error: 'terjadi kesalahan pada database' });
