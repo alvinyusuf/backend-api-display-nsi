@@ -1,7 +1,10 @@
+/* eslint-disable import/no-unresolved */
 /* eslint-disable consistent-return */
 const productionModel = require('../model/productionModel');
+const doubleFilter = require('../utils/doubleFilter');
 
 const response = require('../utils/response');
+const sortByDate = require('../utils/sortByDate');
 
 module.exports = {
   async getProductions(req, res) {
@@ -9,11 +12,11 @@ module.exports = {
       const { line } = req.params;
       let result = await productionModel.getPercentProduction(line);
 
-      if (result.length === 0) {
-        result = { percent: 0.000001 };
+      if (!result.length) {
+        result = [{ percent: 0.000001 }];
       }
 
-      return response(200, result, `data production line ${line} hari ini`, res);
+      return response(200, result[0], `data production line ${line} hari ini`, res);
     } catch (error) {
       console.error(error);
     }
@@ -69,8 +72,11 @@ module.exports = {
   async historyProduction(req, res) {
     try {
       const result = await productionModel.getPercentHistory();
+      const data = sortByDate(result);
+      const send = doubleFilter(data);
 
-      return response(200, result, 'data history production 12 bulan terakhir', res);
+      return response(200, send, 'data history production 12 bulan terakhir', res);
+      // return response(200, result[0], 'data history production 12 bulan terakhir', res);
     } catch (error) {
       console.error(error);
     }

@@ -7,7 +7,6 @@ module.exports = {
     try {
       const conn = await mssql;
       const now = getFormatDate(new Date());
-      console.log(now);
 
       const result = await conn.query(`/* SELECT * FROM OFPR T0 */
         /* SELECT * FROM [@MASTERMESIN] Y  */
