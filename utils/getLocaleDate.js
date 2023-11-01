@@ -5,6 +5,7 @@ module.exports = function getLocaleDate(date, month = false) {
     });
   }
   return new Date(date).toLocaleString('en-US', {
-    timeZone: 'Asia/Jakarta', hour12: false, year: 'numeric', month: 'numeric', day: 'numeric',
+    timeZone: 'Asia/Jakarta', hour12: false, year: 'numeric', month: 'long', day: 'numeric',
+    // timeZone: 'Asia/Jakarta', hour12: false, year: 'numeric', month: 'numeric', day: 'numeric',
   });
 };

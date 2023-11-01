@@ -2,6 +2,7 @@
 const maintenaneModel = require('../model/maintenanceModel');
 const addingDowntime = require('../utils/addingDowntime');
 const currentDowntimeFormater = require('../utils/currentDowntimeFormater');
+const downtimeToHours = require('../utils/downtimeToHours');
 const downtimeToSeconds = require('../utils/downtimeToSeconds');
 const getLocaleDate = require('../utils/getLocaleDate');
 const response = require('../utils/response');
@@ -22,6 +23,7 @@ module.exports = {
 
         const data = {
           ...downtime,
+          totalDowntimeInHours: downtimeToHours(downtime.totalDowntime),
           percentDowntime,
           bulanDowntime: getLocaleDate(new Date()),
         };
@@ -53,6 +55,7 @@ module.exports = {
           const data = {
             totalDowntime: result[0].totalDowntime,
             totalDowntimeInSeconds,
+            totalDowntimeInHours: downtimeToHours(downtime),
             percentDowntime,
             bulanDowntime: date,
           };
@@ -82,9 +85,12 @@ module.exports = {
           statusMesin: element.status_mesin,
           tglKerusakan: getLocaleDate(element.tgl_kerusakan),
           totalDowntime: addingDowntime(element.current_downtime, element.total_downtime),
-          totalDowntimeInHours: downtimeToSeconds(
+          totalDowntimeInHours: downtimeToHours(
             addingDowntime(element.current_downtime, element.total_downtime),
-          ) / 3600,
+          ),
+          totalDowntimeInSeconds: downtimeToSeconds(
+            addingDowntime(element.current_downtime, element.total_downtime),
+          ),
         }));
 
         return response(200, data, 'data downtime tiap mesin', res);
@@ -110,6 +116,7 @@ module.exports = {
 
         currentDowntime = {
           ...downtime,
+          totalDowntimeInHours: downtimeToHours(downtime.totalDowntime),
           percentDowntime,
           bulanDowntime: getLocaleDate(new Date(), true),
         };
@@ -124,6 +131,7 @@ module.exports = {
         const data = result.map((element) => ({
           totalDowntime: element.totalDowntime,
           totalDowntimeInSeconds: downtimeToSeconds(element.totalDowntime),
+          totalDowntimeInHours: downtimeToHours(element.totalDowntime),
           percentDowntime: (downtimeToSeconds(element.totalDowntime) / limitDowntime) * 100,
           bulanDowntime: getLocaleDate(element.bulan_downtime, true),
         }));
