@@ -14,4 +14,10 @@ const config = {
 const pool = new mssql.ConnectionPool(config);
 const conn = pool.connect();
 
+conn.then(() => {
+  console.log('Connected to SQL Server');
+}).catch((err) => {
+  console.error('Error connecting to SQL Server:', err);
+});
+
 module.exports = conn;

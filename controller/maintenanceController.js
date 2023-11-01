@@ -2,6 +2,7 @@
 const maintenaneModel = require('../model/maintenanceModel');
 const addingDowntime = require('../utils/addingDowntime');
 const currentDowntimeFormater = require('../utils/currentDowntimeFormater');
+const downtimeToHours = require('../utils/downtimeToHours');
 const downtimeToSeconds = require('../utils/downtimeToSeconds');
 const getLocaleDate = require('../utils/getLocaleDate');
 const response = require('../utils/response');
@@ -16,9 +17,14 @@ module.exports = {
         }
 
         const downtime = currentDowntimeFormater(result);
+        const limitDowntime = 10368000;
+        const percentDowntime = (downtime.totalDowntimeInSeconds / limitDowntime) * 100
+          .toFixed(2);
 
         const data = {
           ...downtime,
+          totalDowntimeInHours: downtimeToHours(downtime.totalDowntime),
+          percentDowntime,
           bulanDowntime: getLocaleDate(new Date()),
         };
 
@@ -43,9 +49,14 @@ module.exports = {
           const totalDowntimeInSeconds = downtimeToSeconds(downtime);
           const date = getLocaleDate(result[0].bulan_downtime);
 
+          const limitDowntime = 10368000;
+          const percentDowntime = ((totalDowntimeInSeconds / limitDowntime) * 100).toFixed(2);
+
           const data = {
             totalDowntime: result[0].totalDowntime,
             totalDowntimeInSeconds,
+            totalDowntimeInHours: downtimeToHours(downtime),
+            percentDowntime,
             bulanDowntime: date,
           };
 
@@ -74,6 +85,9 @@ module.exports = {
           statusMesin: element.status_mesin,
           tglKerusakan: getLocaleDate(element.tgl_kerusakan),
           totalDowntime: addingDowntime(element.current_downtime, element.total_downtime),
+          totalDowntimeInHours: downtimeToHours(
+            addingDowntime(element.current_downtime, element.total_downtime),
+          ),
           totalDowntimeInSeconds: downtimeToSeconds(
             addingDowntime(element.current_downtime, element.total_downtime),
           ),
@@ -89,6 +103,7 @@ module.exports = {
   getHistoryDowntimes(req, res) {
     try {
       let currentDowntime;
+      const limitDowntime = 10368000;
       maintenaneModel.getCurrentDowntime((err, result) => {
         if (err) {
           console.error(err);
@@ -96,10 +111,14 @@ module.exports = {
         }
 
         const downtime = currentDowntimeFormater(result);
+        const percentDowntime = (downtime.totalDowntimeInSeconds / limitDowntime) * 100
+          .toFixed(2);
 
         currentDowntime = {
           ...downtime,
-          bulanDowntime: getLocaleDate(new Date()),
+          totalDowntimeInHours: downtimeToHours(downtime.totalDowntime),
+          percentDowntime,
+          bulanDowntime: getLocaleDate(new Date(), true),
         };
       });
 
@@ -112,7 +131,9 @@ module.exports = {
         const data = result.map((element) => ({
           totalDowntime: element.totalDowntime,
           totalDowntimeInSeconds: downtimeToSeconds(element.totalDowntime),
-          bulanDowntime: getLocaleDate(element.bulan_downtime),
+          totalDowntimeInHours: downtimeToHours(element.totalDowntime),
+          percentDowntime: (downtimeToSeconds(element.totalDowntime) / limitDowntime) * 100,
+          bulanDowntime: getLocaleDate(element.bulan_downtime, true),
         }));
 
         data.unshift(currentDowntime);

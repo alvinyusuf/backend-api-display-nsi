@@ -7,7 +7,6 @@ module.exports = {
     try {
       const conn = await mssql;
       const now = getFormatDate(new Date());
-      console.log(now);
 
       const result = await conn.query(`/* SELECT * FROM OFPR T0 */
         /* SELECT * FROM [@MASTERMESIN] Y  */
@@ -39,6 +38,7 @@ module.exports = {
     try {
       const conn = await mssql;
       const now = getFormatDate(new Date());
+      console.log(now);
 
       const result = await conn.query(`SELECT
         T0.[U_MIS_NoMesin] as 'mcn',
@@ -94,7 +94,6 @@ module.exports = {
         T0.[U_MIS_NoMesin], Y.U_MIS_CodeGroup, T0.[DocNum], T0.[PostDate],
         T0.[ItemCode], T0.[PlannedQty], T0.[CmpltQty], T0.[Warehouse],
         T0.[U_MIS_NextProc], T0.[Status], T0.[UserSign] Order by Y.U_MIS_CodeGroup asc`);
-
       return result.recordsets;
     } catch (error) {
       console.error(error);

@@ -20,8 +20,17 @@ module.exports = {
       machine_repairs.current_downtime, machine_repairs.total_downtime
       FROM machine_repairs JOIN machines ON
       machine_repairs.mesin_id = machines.id
-      WHERE status_mesin != 'OK Repair (Finish)'`, calback);
+      WHERE status_mesin != 'OK Repair (Finish)' AND status_aktifitas = 'Stop'`, calback);
   },
+  // getCurrentMachines(calback) {
+  //   mysql.query(`SELECT machine_repairs.id, machines.no_mesin AS noMesin,
+  //     machine_repairs.pic, machine_repairs.status_aktifitas,
+  //     machine_repairs.status_mesin, machine_repairs.tgl_kerusakan,
+  //     machine_repairs.current_downtime, machine_repairs.total_downtime
+  //     FROM machine_repairs JOIN machines ON
+  //     machine_repairs.mesin_id = machines.id
+  //     WHERE status_mesin != 'OK Repair (Finish)'`, calback);
+  // },
 
   getHistoryDowntime(callback) {
     mysql.query(`SELECT total_downtime AS totalDowntime, bulan_downtime FROM total_downtimes

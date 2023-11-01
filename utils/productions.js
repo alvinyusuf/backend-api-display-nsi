@@ -6,11 +6,16 @@ function getFormatDate(now, isStartMonth = false, beforeNow = false) {
   if (isStartMonth) {
     date = '01';
   } else if (beforeNow || hour < 10) {
-    date = now.getDate() - 1;
+    if (now.getDate() === 1) {
+      // date = now.getDate() + 20;
+      date = now.getDate();
+    } else {
+      date = now.getDate() - 1;
+    }
   } else {
     date = now.getDate();
   }
-  const dateNow = `${month}-${date}-${year} `;
+  const dateNow = `${month}-${date}-${year}`;
   return dateNow;
 }
 
