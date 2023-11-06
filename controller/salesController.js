@@ -47,13 +47,4 @@ module.exports = {
       console.error(error);
     }
   },
-
-  async getCheckActual(req, res) {
-    try {
-      const data = await salesModel.cekImproveActual();
-      return response(200, data, 'cek query', res);
-    } catch (error) {
-      console.error(error);
-    }
-  },
 };

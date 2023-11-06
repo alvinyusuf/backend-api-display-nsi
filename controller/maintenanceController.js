@@ -17,7 +17,7 @@ module.exports = {
         }
 
         const downtime = currentDowntimeFormater(result);
-        const limitDowntime = 10368000;
+        const limitDowntime = 9900000;
         const percentDowntime = (downtime.totalDowntimeInSeconds / limitDowntime) * 100
           .toFixed(2);
 
@@ -49,7 +49,7 @@ module.exports = {
           const totalDowntimeInSeconds = downtimeToSeconds(downtime);
           const date = getLocaleDate(result[0].bulan_downtime);
 
-          const limitDowntime = 10368000;
+          const limitDowntime = 9900000;
           const percentDowntime = ((totalDowntimeInSeconds / limitDowntime) * 100).toFixed(2);
 
           const data = {
@@ -63,6 +63,31 @@ module.exports = {
           return response(200, data, `data downtime ${bulan} lalu`, res);
         }
         return res.status(500).json({ error: 'hanya mampu mengambil 2 bulan terakhir' });
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
+  getBeforeTwoMonths(req, res) {
+    try {
+      const { bulan } = req.params;
+
+      const limitDowntime = 9900000;
+      maintenaneModel.getBeforeTwoMonths(bulan, (err, result) => {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ error: 'terjadi kesalahan pada database' });
+        }
+
+        const data = result.map((element) => ({
+          totalDowntime: element.totalDowntime,
+          totalDowntimeInSeconds: downtimeToSeconds(element.totalDowntime),
+          totalDowntimeInHours: downtimeToHours(element.totalDowntime),
+          percentDowntime: (downtimeToSeconds(element.totalDowntime) / limitDowntime) * 100,
+          bulanDowntime: getLocaleDate(element.bulan_downtime, true),
+        }));
+        return response(200, data, 'data history downtime 2 bulan terakhir', res);
       });
     } catch (error) {
       console.error(error);
@@ -103,7 +128,7 @@ module.exports = {
   getHistoryDowntimes(req, res) {
     try {
       let currentDowntime;
-      const limitDowntime = 10368000;
+      const limitDowntime = 9900000;
       maintenaneModel.getCurrentDowntime((err, result) => {
         if (err) {
           console.error(err);

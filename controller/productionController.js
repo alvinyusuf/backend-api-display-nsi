@@ -8,18 +8,36 @@ const sortByDate = require('../utils/sortByDate');
 module.exports = {
   async getProductions(req, res) {
     try {
-      const { line } = req.params;
-      let result = await productionModel.getPercentProduction(line);
+      let result = await productionModel.getCurrentPercentProduction();
       let lengthOfObject;
       if (result !== null) {
         lengthOfObject = Object.keys(result).length;
       }
 
       if (!lengthOfObject || result === null) {
-        result = [{ percen: 0.000001 }];
+        result = [{
+          PostDate: new Date(),
+          LineType: 'CAM',
+          RataRata: 0.001,
+        },
+        {
+          PostDate: new Date(),
+          LineType: 'LINE1',
+          RataRata: 0.001,
+        },
+        {
+          PostDate: new Date(),
+          LineType: 'LINE2',
+          RataRata: 0.001,
+        },
+        {
+          PostDate: new Date(),
+          LineType: 'LINE3',
+          RataRata: 0.001,
+        }];
       }
 
-      return response(200, result[0], `data production line ${line} hari ini`, res);
+      return response(200, result, 'data production semua line hari ini', res);
     } catch (error) {
       console.error(error);
       return response(500, [], 'ada kesalahan di controller', res);
@@ -59,6 +77,7 @@ module.exports = {
 
       if (!lengthOfObject) {
         result[0] = [{
+          id: null,
           mcn: null,
           groupMcn: null,
           itemCode: null,
@@ -70,7 +89,13 @@ module.exports = {
         }];
       }
 
-      return response(200, result[0], `data production permesin di line ${line} hari ini`, res);
+      const dataWithIds = result[0].map((item, index) => ({
+        id: `${index + 1}`,
+        ...item,
+      }));
+
+      return response(200, dataWithIds, `data production permesin di line ${line} hari ini`, res);
+      // return response(200, result[0], `data production permesin di line ${line} hari ini`, res);
     } catch (error) {
       console.error(error);
       return response(500, [], 'ada kesalahan di controller', res);
