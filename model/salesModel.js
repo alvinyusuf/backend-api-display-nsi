@@ -1,5 +1,5 @@
 /* eslint-disable consistent-return */
-const mssql = require('../config/mssql');
+const mssql = require('../services/database/mssqlSales');
 const getFormatDate = require('../utils/productions');
 
 module.exports = {
@@ -294,27 +294,5 @@ module.exports = {
     } catch (error) {
       console.error(error);
     }
-  },
-
-  async cekImproveActual() {
-    const conn = await mssql;
-    const query = `SELECT
-      T1.Currency,
-      T1.Price,
-      T1.Quantity
-      FROM ODLN T0
-      INNER JOIN DLN1 T1 ON T0.[DocEntry] = T1.[DocEntry]
-      LEFT JOIN ortt f ON T1.Currency = f.Currency AND T1.DocDate = f.RateDate
-      WHERE T0.DocDate >= '2023-01-01' AND T0.DocDate <= '2023-12-31'
-      AND (T1.LineStatus = 'O' OR (T0.CANCELED NOT IN ('Y', 'C'))
-          OR (T1.LineStatus = 'C' AND ISNULL(t1.Targettype, '-1') NOT IN ('-1', '15')  AND ISNULL(t1.TrgetEntry, '') <> ''))
-      AND (T1.[Quantity] - ISNULL((SELECT SUM(quantity) FROM rdn1 WHERE baseentry = T1.DocEntry AND basetype = T1.ObjType AND baseline = T1.LineNum), 0)
-          - ISNULL((SELECT SUM(b.quantity) FROM inv1 a LEFT JOIN RIN1 b ON a.DocEntry = b.BaseEntry AND a.ObjType = b.BaseType AND a.LineNum = b.BaseLine
-          WHERE a.baseentry = T1.DocEntry AND a.basetype = T1.ObjType AND a.baseline = T1.LineNum), 0)) <> 0
-      ORDER BY T1.[ItemCode];
-      `;
-
-    const result = await conn.query(query);
-    return result.recordsets;
   },
 };

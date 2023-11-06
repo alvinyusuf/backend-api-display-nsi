@@ -1,4 +1,4 @@
-const mysql = require('../config/mysql');
+const mysql = require('../services/database/mysql');
 
 module.exports = {
   async getReportDepart(callback) {
