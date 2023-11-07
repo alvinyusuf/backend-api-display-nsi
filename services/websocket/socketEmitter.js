@@ -66,53 +66,31 @@ module.exports = {
 
   async productionEmitter(socket) {
     try {
-      let result = await productionModel.getCurrentPercentProduction();
-      let lengthOfObject;
-      if (result !== null) {
-        lengthOfObject = Object.keys(result).length;
-      }
-
-      if (!lengthOfObject || result === null) {
-        result = [{
-          LineType: 'CAM',
-          RataRata: 0.001,
-        },
-        {
-          LineType: 'LINE1',
-          RataRata: 0.001,
-        },
-        {
-          LineType: 'LINE2',
-          RataRata: 0.001,
-        },
-        {
-          LineType: 'LINE3',
-          RataRata: 0.001,
-        }];
-      }
-
-      const data = {};
-
-      result.forEach((item) => {
-        const lineType = item.LineType.toLowerCase();
-        data[lineType] = { percen: item.RataRata };
-      });
-      socket.emit('percentProduction', data);
+      const result = await productionModel.getCurrentPercentProduction();
+      socket.emit('percentProduction', result);
     } catch (error) {
-      const data = {
-        cam: {
-          percen: 0.001,
+      const data = [
+        {
+          PostDate: '2023-11-06T00:00:00.000Z',
+          LineType: 'CAM',
+          RataRata: 56.4421,
         },
-        line1: {
-          percen: 0.001,
+        {
+          PostDate: '2023-11-06T00:00:00.000Z',
+          LineType: 'LINE1',
+          RataRata: 85.0973,
         },
-        line2: {
-          percen: 0.001,
+        {
+          PostDate: '2023-11-06T00:00:00.000Z',
+          LineType: 'LINE2',
+          RataRata: 87.0568,
         },
-        line3: {
-          percen: 0.001,
+        {
+          PostDate: '2023-11-06T00:00:00.000Z',
+          LineType: 'LINE3',
+          RataRata: 80.3124,
         },
-      };
+      ];
       socket.emit('percentProduction', data);
       console.error('Error in productionEmitter:', error);
     }
@@ -121,16 +99,17 @@ module.exports = {
   async salesMonthlyEmitter(socket) {
     try {
       const listCustomer = await salesModel.getListCostumer();
-      let targetUSD = 0;
-      let aktualUSD = 0;
+      // let targetUSD = 0;
+      // let aktualUSD = 0;
 
-      listCustomer.map((e) => {
-        targetUSD += e.totalTargetUSD;
-        aktualUSD += e.totalAktualUSD;
-      });
+      // listCustomer.map((e) => {
+      //   targetUSD += e.totalTargetUSD;
+      //   aktualUSD += e.totalAktualUSD;
+      // });
 
-      const data = (aktualUSD / targetUSD) * 100;
-      socket.emit('monthlySales', data);
+      // const data = (aktualUSD / targetUSD) * 100;
+      // socket.emit('monthlySales', data);
+      socket.emit('monthlySales', listCustomer);
     } catch (error) {
       console.error(error);
     }

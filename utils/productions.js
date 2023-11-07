@@ -13,8 +13,8 @@ function getFormatDate(now, isStartMonth = false, beforeNow = false) {
       date = now.getDate() - 1;
     }
   } else {
-    date = now.getDate() - 4;
-    // date = now.getDate();
+    // date = now.getDate() - 4;
+    date = now.getDate();
   }
   const dateNow = `${month}-${date}-${year}`;
   return dateNow;

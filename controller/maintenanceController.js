@@ -18,7 +18,7 @@ module.exports = {
 
         const downtime = currentDowntimeFormater(result);
         const limitDowntime = 9900000;
-        const percentDowntime = (downtime.totalDowntimeInSeconds / limitDowntime) * 100
+        const percentDowntime = ((downtime.totalDowntimeInSeconds / limitDowntime) * 100)
           .toFixed(2);
 
         const data = {

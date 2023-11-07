@@ -29,25 +29,26 @@ io.on('connection', (socket) => {
     await socketEmitter.qualityEmitter(socket);
   }, 1000);
 
-  // const emitDataProduction = setInterval(async () => {
-  //   await socketEmitter.productionEmitter(socket);
-  // }, 10000);
+  const emitDataProduction = setInterval(async () => {
+    await socketEmitter.productionEmitter(socket);
+  }, 600000); // 10 menit sekali untuk emit
 
-  // const emitMonthlySales = setInterval(async () => {
-  //   await socketEmitter.salesMonthlyEmitter(socket);
+  const emitMonthlySales = setInterval(async () => {
+    await socketEmitter.salesMonthlyEmitter(socket);
   // }, 20000);
+  }, 1860000); // 31 menit sekali untuk emit
 
-  // const emitQmpSales = setInterval(async () => {
-  //   await socketEmitter.salesQmpEmitter(socket);
-  // }, 30000);
+  const emitQmpSales = setInterval(async () => {
+    await socketEmitter.salesQmpEmitter(socket);
+  }, 1740000); // 29 menit sekali untuk emit
 
   socket.on('disconnect', () => {
     console.log('frontend disconnected');
     clearInterval(emitData);
     clearInterval(emitDataQuality);
-    // clearInterval(emitDataProduction);
-    // clearInterval(emitMonthlySales);
-    // clearInterval(emitQmpSales);
+    clearInterval(emitDataProduction);
+    clearInterval(emitMonthlySales);
+    clearInterval(emitQmpSales);
   });
 });
 
