@@ -1,6 +1,28 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable no-restricted-globals */
 const qualityModel = require('../model/qualityModel');
 const response = require('../utils/response');
+
+function counter(data, depart) {
+  const counts = {};
+
+  const dataDepart = data.map((item) => {
+    const { departement } = item;
+    if (departement === depart) {
+      return {
+        ...item,
+      };
+    } else {
+      return {};
+    }
+  });
+
+  if (dataDepart.length) {
+    console.log('hehe');
+  }
+
+  return dataDepart;
+}
 
 module.exports = {
   getReportDepartement(req, res) {
@@ -34,6 +56,22 @@ module.exports = {
         };
 
         return response(200, data, 'Data report quality IPQC dan OQC', res);
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
+  getDetailDepartement(req, res) {
+    try {
+      qualityModel.getDetailDepart((err, result) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ error: 'terjadi kesalahan pada database' });
+        }
+        const cek = counter(result, 'ilnkj');
+        console.log(cek);
+        return response(200, result[0], 'data detail quality', res);
       });
     } catch (error) {
       console.error(error);

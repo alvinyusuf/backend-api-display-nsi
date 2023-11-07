@@ -42,7 +42,7 @@ module.exports = {
   async getActualOnYear(req, res) {
     try {
       const data = await salesModel.getActualOnYear();
-      return response(200, data[0], 'cek query', res);
+      return response(200, data[0], 'data sales selama satu tahun berjalan', res);
     } catch (error) {
       console.error(error);
     }
