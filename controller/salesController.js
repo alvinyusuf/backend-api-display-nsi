@@ -47,4 +47,13 @@ module.exports = {
       console.error(error);
     }
   },
+
+  async getDetailActual(req, res) {
+    try {
+      const data = await salesModel.getDetailActual();
+      return response(200, data, 'data list semua customer', res);
+    } catch (error) {
+      console.error(error);
+    }
+  },
 };

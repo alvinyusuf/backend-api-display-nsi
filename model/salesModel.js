@@ -295,4 +295,43 @@ module.exports = {
       console.error(error);
     }
   },
+
+  async getDetailActual() {
+    try {
+      const conn = await mssql;
+      const now = getFormatDate(new Date());
+      const today = new Date();
+      const year = today.getFullYear();
+      const query = `SELECT
+        FORMAT(T0.[DocDate], 'MMMM') AS [bulan],
+        SUM(
+          CASE
+            WHEN T1.Currency = 'IDR' THEN T1.Price * T1.Quantity / f.Rate
+            WHEN T1.Currency = 'JPY' THEN T1.Price * T1.Quantity / f.Rate
+            ELSE T1.Price * T1.Quantity
+          END
+        ) AS 'totalUSDPrice'
+        FROM ODLN T0
+        INNER JOIN DLN1 T1 ON T0.[DocEntry] = T1.[DocEntry]
+        LEFT JOIN (SELECT baseentry, basetype, baseline, SUM(quantity) AS [quantity]
+          FROM rdn1 WITH (NOLOCK)
+          GROUP BY baseentry, basetype, baseline) v ON v.BaseEntry = T1.DocEntry AND v.BaseType = T1.ObjType AND v.BaseLine = T1.LineNum
+        LEFT JOIN (SELECT a.baseentry, a.basetype, a.baseline, SUM(b.quantity) AS [quantity]
+          FROM inv1 a WITH (NOLOCK)
+          LEFT JOIN RIN1 b WITH (NOLOCK) ON a.DocEntry = b.BaseEntry AND a.ObjType = b.BaseType AND a.LineNum = b.BaseLine
+          GROUP BY a.baseentry, a.basetype, a.baseline) x ON x.BaseEntry = T1.DocEntry AND x.BaseType = T1.ObjType AND x.BaseLine = T1.LineNum
+        LEFT JOIN ortt f ON T1.Currency = f.Currency AND T1.DocDate = f.RateDate
+        WHERE T0.DocDate >= '01-01-${year}' AND T0.DocDate <= '${now}'
+          AND (T1.LineStatus = 'O' OR (T0.CANCELED NOT IN ('Y', 'C'))
+          OR (T1.LineStatus = 'C' AND ISNULL(t1.Targettype, '-1') NOT IN ('-1', '15') AND ISNULL(t1.TrgetEntry, '') <> ''))
+          AND (T1.[Quantity] - ISNULL(v.[quantity], 0) - ISNULL(x.[quantity], 0)) <> 0
+        GROUP BY FORMAT(T0.[DocDate], 'MMMM')
+        ORDER BY MIN(T0.[DocDate])`;
+
+      const result = await conn.query(query);
+      return result.recordset;
+    } catch (error) {
+      console.error(error);
+    }
+  },
 };
