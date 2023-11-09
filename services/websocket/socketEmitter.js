@@ -35,29 +35,7 @@ module.exports = {
           return err;
         }
 
-        const percentCamIpqc = isNaN(result[0].aktual_cam_ipqc / result[0].target_cam_ipqc) ? 0
-          : (result[0].aktual_cam_ipqc / result[0].target_cam_ipqc) * 100;
-        const percentCncIpqc = isNaN(result[0].aktual_cnc_ipqc / result[0].target_cnc_ipqc) ? 0
-          : (result[0].aktual_cnc_ipqc / result[0].target_cnc_ipqc) * 100;
-        const percentMfgIpqc = isNaN(result[0].aktual_mfg_ipqc / result[0].target_mfg_ipqc) ? 0
-          : (result[0].aktual_mfg_ipqc / result[0].target_mfg_ipqc) * 100;
-        const percentCamOqc = isNaN(result[0].aktual_cam_oqc / result[0].target_cam_oqc) ? 0
-          : (result[0].aktual_cam_oqc / result[0].target_cam_oqc) * 100;
-        const percentCncOqc = isNaN(result[0].aktual_cnc_oqc / result[0].target_cnc_oqc) ? 0
-          : (result[0].aktual_cnc_oqc / result[0].target_cnc_oqc) * 100;
-        const percentMfgOqc = isNaN(result[0].aktual_mfg_oqc / result[0].target_mfg_oqc) ? 0
-          : (result[0].aktual_mfg_oqc / result[0].target_mfg_oqc) * 100;
-
-        const data = {
-          percentCamIpqc,
-          percentCncIpqc,
-          percentMfgIpqc,
-          percentCamOqc,
-          percentCncOqc,
-          percentMfgOqc,
-        };
-
-        socket.emit('percenClaims', data);
+        socket.emit('percenClaims', result);
       });
     } catch (error) {
       console.error(error);
@@ -73,22 +51,22 @@ module.exports = {
         {
           PostDate: '2023-11-06T00:00:00.000Z',
           LineType: 'CAM',
-          RataRata: 56.4421,
+          RataRata: 0,
         },
         {
           PostDate: '2023-11-06T00:00:00.000Z',
           LineType: 'LINE1',
-          RataRata: 85.0973,
+          RataRata: 0,
         },
         {
           PostDate: '2023-11-06T00:00:00.000Z',
           LineType: 'LINE2',
-          RataRata: 87.0568,
+          RataRata: 0,
         },
         {
           PostDate: '2023-11-06T00:00:00.000Z',
           LineType: 'LINE3',
-          RataRata: 80.3124,
+          RataRata: 0,
         },
       ];
       socket.emit('percentProduction', data);
@@ -99,16 +77,6 @@ module.exports = {
   async salesMonthlyEmitter(socket) {
     try {
       const listCustomer = await salesModel.getListCostumer();
-      // let targetUSD = 0;
-      // let aktualUSD = 0;
-
-      // listCustomer.map((e) => {
-      //   targetUSD += e.totalTargetUSD;
-      //   aktualUSD += e.totalAktualUSD;
-      // });
-
-      // const data = (aktualUSD / targetUSD) * 100;
-      // socket.emit('monthlySales', data);
       socket.emit('monthlySales', listCustomer);
     } catch (error) {
       console.error(error);
