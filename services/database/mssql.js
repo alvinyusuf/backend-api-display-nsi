@@ -5,10 +5,13 @@ const config = {
   password: 'P@ssw0rd',
   server: 'sapbi2',
   database: 'SBO_NSI_USD_LIVE',
+  pool: {
+    idleTimeoutMillis: 3600000,
+  },
   options: {
     encrypt: false,
     trustServerCertificate: true,
-    // connectTimeout: 20000,
+    connectionTimeout: 20000,
   },
 };
 

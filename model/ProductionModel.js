@@ -58,6 +58,28 @@ module.exports = {
       return result.recordset;
     } catch (error) {
       console.error(error);
+      return [
+        {
+          PostDate: '2023-11-06T00:00:00.000Z',
+          LineType: 'CAM',
+          RataRata: 0,
+        },
+        {
+          PostDate: '2023-11-06T00:00:00.000Z',
+          LineType: 'LINE1',
+          RataRata: 0,
+        },
+        {
+          PostDate: '2023-11-06T00:00:00.000Z',
+          LineType: 'LINE2',
+          RataRata: 0,
+        },
+        {
+          PostDate: '2023-11-06T00:00:00.000Z',
+          LineType: 'LINE3',
+          RataRata: 0,
+        },
+      ];
     }
   },
 
