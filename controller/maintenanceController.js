@@ -4,20 +4,22 @@ const addingDowntime = require('../utils/addingDowntime');
 const currentDowntimeFormater = require('../utils/currentDowntimeFormater');
 const downtimeToHours = require('../utils/downtimeToHours');
 const downtimeToSeconds = require('../utils/downtimeToSeconds');
+const getLimitDowntime = require('../utils/getLimitDowntime');
 const getLocaleDate = require('../utils/getLocaleDate');
 const response = require('../utils/response');
 
 module.exports = {
   getCurrentDowntime(req, res) {
     try {
-      maintenaneModel.getCurrentDowntime((err, result) => {
+      maintenaneModel.getCurrentDowntime(async (err, result) => {
         if (err) {
           console.error(err);
           return res.status(500).json({ error: 'terjadi kesalahan pada database' });
         }
 
         const downtime = currentDowntimeFormater(result);
-        const limitDowntime = 9900000;
+        const limit = await getLimitDowntime();
+        const limitDowntime = limit * 3600;
         const percentDowntime = ((downtime.totalDowntimeInSeconds / limitDowntime) * 100)
           .toFixed(2);
 
@@ -39,7 +41,7 @@ module.exports = {
     try {
       const { bulan } = req.params;
 
-      maintenaneModel.getBeforeDowntime(bulan, (err, result) => {
+      maintenaneModel.getBeforeDowntime(bulan, async (err, result) => {
         if (err) {
           console.error(err);
           return res.status(500).json({ error: 'ada kesalahan query' });
@@ -49,7 +51,8 @@ module.exports = {
           const totalDowntimeInSeconds = downtimeToSeconds(downtime);
           const date = getLocaleDate(result[0].bulan_downtime);
 
-          const limitDowntime = 9900000;
+          const limit = await getLimitDowntime();
+          const limitDowntime = limit * 3600;
           const percentDowntime = ((totalDowntimeInSeconds / limitDowntime) * 100).toFixed(2);
 
           const data = {
@@ -73,8 +76,9 @@ module.exports = {
     try {
       const { bulan } = req.params;
 
-      const limitDowntime = 9900000;
-      maintenaneModel.getBeforeTwoMonths(bulan, (err, result) => {
+      maintenaneModel.getBeforeTwoMonths(bulan, async (err, result) => {
+        const limit = await getLimitDowntime();
+        const limitDowntime = limit * 3600;
         if (err) {
           console.error(err);
           res.status(500).json({ error: 'terjadi kesalahan pada database' });
@@ -128,8 +132,9 @@ module.exports = {
   getHistoryDowntimes(req, res) {
     try {
       let currentDowntime;
-      const limitDowntime = 9900000;
-      maintenaneModel.getCurrentDowntime((err, result) => {
+      maintenaneModel.getCurrentDowntime(async (err, result) => {
+        const limit = await getLimitDowntime();
+        const limitDowntime = limit * 3600;
         if (err) {
           console.error(err);
           return res.status(500).json({ error: 'terjadi kesalahan pada database' });
@@ -147,7 +152,9 @@ module.exports = {
         };
       });
 
-      maintenaneModel.getHistoryDowntime((err, result) => {
+      maintenaneModel.getHistoryDowntime(async (err, result) => {
+        const limit = await getLimitDowntime();
+        const limitDowntime = limit * 3600;
         if (err) {
           console.error(err);
           res.status(500).json({ error: 'terjadi kesalahan pada database' });

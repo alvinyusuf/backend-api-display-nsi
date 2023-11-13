@@ -16,22 +16,22 @@ module.exports = {
 
       if (!lengthOfObject || result === null) {
         result = [{
-          PostDate: new Date(),
+          PostDate: '2023-11-13T00:34:06.956Z',
           LineType: 'CAM',
           RataRata: 0.001,
         },
         {
-          PostDate: new Date(),
+          PostDate: '2023-11-13T00:34:06.956Z',
           LineType: 'LINE1',
           RataRata: 0.001,
         },
         {
-          PostDate: new Date(),
+          PostDate: '2023-11-13T00:34:06.956Z',
           LineType: 'LINE2',
           RataRata: 0.001,
         },
         {
-          PostDate: new Date(),
+          PostDate: '2023-11-13T00:34:06.956Z',
           LineType: 'LINE3',
           RataRata: 0.001,
         }];

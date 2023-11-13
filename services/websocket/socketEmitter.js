@@ -6,17 +6,19 @@ const productionModel = require('../../model/productionModel');
 const qualityModel = require('../../model/qualityModel');
 const salesModel = require('../../model/salesModel');
 const currentDowntimeFormater = require('../../utils/currentDowntimeFormater');
+const getLimitDowntime = require('../../utils/getLimitDowntime');
 
 module.exports = {
   async downtimeEmitter(socket) {
     try {
-      maintenanceModel.getCurrentDowntime((err, result) => {
+      maintenanceModel.getCurrentDowntime(async (err, result) => {
         if (err) {
           console.error(err);
           return err;
         }
         const downtime = currentDowntimeFormater(result);
-        const limitDowntime = 9900000;
+        const limit = await getLimitDowntime();
+        const limitDowntime = limit * 3600;
         const percentDowntime = ((downtime.totalDowntimeInSeconds / limitDowntime) * 100)
           .toFixed(2);
         socket.emit('currentDowntime', percentDowntime);
