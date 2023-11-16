@@ -8,7 +8,8 @@ const config = {
   options: {
     encrypt: false,
     trustServerCertificate: true,
-    connectTimeout: 60000,
+    connectionTimeout: 60000,
+    stream: true,
   },
 };
 
