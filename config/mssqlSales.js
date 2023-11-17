@@ -9,6 +9,7 @@ const config = {
     encrypt: false,
     trustServerCertificate: true,
     connectionTimeout: 60000,
+    requestTimeout: 30000,
     stream: true,
   },
 };
