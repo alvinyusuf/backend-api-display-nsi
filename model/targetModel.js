@@ -1,9 +1,20 @@
 const mysql = require('../services/database/mysql');
 
 module.exports = {
-  getTarget(callback) {
+  async getTargetMaintenance(callback) {
     try {
-      mysql.query('SELECT * FROM dashboard.targets LIMIT 1', callback);
+      mysql.query(`SELECT target_maintenance
+        FROM target_maintenances LIMIT 1`, callback);
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
+  async getMonthlyTarget(callback) {
+    try {
+      mysql.query(`SELECT januari, februari, maret, april, mei, juni,
+      juli, agustus, september, oktober, november, desember
+      FROM target_sales WHERE YEAR(tahun) = YEAR(NOW()) LIMIT 1`, callback);
     } catch (error) {
       console.error(error);
     }

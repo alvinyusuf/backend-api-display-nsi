@@ -5,7 +5,7 @@ const targetModel = require('../model/targetModel');
 function getLimitDowntime() {
   return new Promise((resolve, reject) => {
     try {
-      targetModel.getTarget((err, result) => {
+      targetModel.getTargetMaintenance((err, result) => {
         if (err) {
           console.error(err);
           resolve(2750);
