@@ -128,46 +128,48 @@ module.exports = {
 
   async getMonthlyPercent(req, res) {
     try {
-      let aktual = await getDetailActual();
-      let target = await getMonthlyTarget();
-      let result = {persen: {},};
-      const englishData = {};
+      const aktual = await getDetailActual();
+      const target = await getMonthlyTarget();
+      const data = { aktual, target };
+      // let result = {persen: {},};
+      // const englishData = {};
 
-      const indonesianToEnglishMonthMap = {
-        januari: 'January',
-        februari: 'February',
-        maret: 'March',
-        april: 'April',
-        mei: 'May',
-        juni: 'June',
-        juli: 'July',
-        agustus: 'August',
-        september: 'September',
-        oktober: 'October',
-        november: 'November',
-        desember: 'December'
-      }
+      // const indonesianToEnglishMonthMap = {
+      //   januari: 'January',
+      //   februari: 'February',
+      //   maret: 'March',
+      //   april: 'April',
+      //   mei: 'May',
+      //   juni: 'June',
+      //   juli: 'July',
+      //   agustus: 'August',
+      //   september: 'September',
+      //   oktober: 'October',
+      //   november: 'November',
+      //   desember: 'December'
+      // }
 
-      for(const [indonesianMonth, value] of Object.entries(target)) {
-        const englishMonth = indonesianToEnglishMonthMap[indonesianMonth];
-        englishData[englishMonth] = value;
+      // for(const [indonesianMonth, value] of Object.entries(target)) {
+      //   const englishMonth = indonesianToEnglishMonthMap[indonesianMonth];
+      //   englishData[englishMonth] = value;
 
-        const data = { aktual, englishData };
-      }
-        
-      const dataGabung = data.aktual.map((item) => ({
+      //   const data = { aktual, englishData };
+      // }
+
+      const dataGabung = aktual.map((item) => ({
         bulan: item.bulan,
         totalUSDPrice: item.totalUSDPrice,
-        target: data.target[item.bulan.toLowerCase()] || 0,
-        persen: ((totalUSDPrice / englishData) * 100),
+        target: target[item.bulan.toLowerCase()] || 0,
+        // persen: ((totalUSDPrice / englishData) * 100),
       }));
       console.log(dataGabung);
 
-      return response(200, result, 'persentase sales bulanan', res);
+      return response(200, 'k', 'persentase sales bulanan', res);
     } catch (error) {
       console.error(error);
     }
-  }
+  },
+
 };
 
 // console.log(data);
