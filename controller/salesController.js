@@ -3,7 +3,6 @@
 const salesModel = require('../model/salesModel');
 const response = require('../utils/response');
 
-// Fungsi untuk mendapatkan nama bulan berdasarkan indeks (1-12)
 function getMonthName(index) {
   const months = [
     'January', 'February', 'March', 'April',
@@ -13,7 +12,6 @@ function getMonthName(index) {
   return months[index - 1];
 }
 
-// Fungsi untuk mendapatkan indeks bulan berdasarkan nama bulan
 function getMonthIndex(monthName) {
   const months = [
     'January', 'February', 'March', 'April',
@@ -24,13 +22,13 @@ function getMonthIndex(monthName) {
 }
 
 async function getDetailActual() {
-  const data = await salesModel.getDetailActual();
-  const defaultValue = {
-    bulan: 'bulan',
-    totalUSDPrice: '0000',
-  };
-
   try {
+    const data = await salesModel.getDetailActual();
+    const defaultValue = {
+      bulan: 'bulan',
+      totalUSDPrice: 0,
+    };
+
     if (data.length < 12) {
       const existingMonths = data.map((item) => item.bulan);
 
@@ -54,8 +52,7 @@ function getMonthlyTarget() {
     salesModel.getMonthlyTarget((err, result) => {
       if (err) {
         console.error(err);
-        // eslint-disable-next-line prefer-promise-reject-errors
-        reject('Terjadi kesalahan pada database');
+        reject(err);
       } else {
         const data = result[0];
         resolve(data);
@@ -63,22 +60,6 @@ function getMonthlyTarget() {
     });
   });
 }
-
-// async function getMonthlyTarget() {
-//   try {
-//     salesModel.getMonthlyTarget(async (err, result) => {
-//       if (err) {
-//         console.error(err);
-//         return 'terjadi kesalahan pada database';
-//       }
-//       const data = await result[0];
-//       // console.log(result);
-//       return data;
-//     });
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
 
 module.exports = {
   async getListCustomer(req, res) {
@@ -130,57 +111,39 @@ module.exports = {
     try {
       const aktual = await getDetailActual();
       const target = await getMonthlyTarget();
-      const data = { aktual, target };
-      // let result = {persen: {},};
-      // const englishData = {};
 
-      // const indonesianToEnglishMonthMap = {
-      //   januari: 'January',
-      //   februari: 'February',
-      //   maret: 'March',
-      //   april: 'April',
-      //   mei: 'May',
-      //   juni: 'June',
-      //   juli: 'July',
-      //   agustus: 'August',
-      //   september: 'September',
-      //   oktober: 'October',
-      //   november: 'November',
-      //   desember: 'December'
-      // }
+      const indonesianToEnglishMonthMap = {
+        januari: 'january',
+        februari: 'february',
+        maret: 'march',
+        april: 'april',
+        mei: 'may',
+        juni: 'june',
+        juli: 'july',
+        agustus: 'august',
+        september: 'september',
+        oktober: 'october',
+        november: 'november',
+        desember: 'december',
+      };
 
-      // for(const [indonesianMonth, value] of Object.entries(target)) {
-      //   const englishMonth = indonesianToEnglishMonthMap[indonesianMonth];
-      //   englishData[englishMonth] = value;
+      const newTarget = Object.keys(target).reduce((acc, key) => {
+        const newKey = indonesianToEnglishMonthMap[key] || key;
+        acc[newKey] = target[key];
+        return acc;
+      }, {});
 
-      //   const data = { aktual, englishData };
-      // }
-
-      const dataGabung = aktual.map((item) => ({
+      const data = aktual.map((item) => ({
         bulan: item.bulan,
         totalUSDPrice: item.totalUSDPrice,
-        target: target[item.bulan.toLowerCase()] || 0,
-        // persen: ((totalUSDPrice / englishData) * 100),
+        target: newTarget[item.bulan.toLowerCase()] || 0,
+        percen: ((item.totalUSDPrice / newTarget[item.bulan.toLowerCase()] || 0) * 100),
       }));
-      console.log(dataGabung);
 
-      return response(200, 'k', 'persentase sales bulanan', res);
+      return response(200, data, 'persentase sales bulanan', res);
     } catch (error) {
       console.error(error);
     }
   },
 
 };
-
-// console.log(data);
-// data.forEach((item) => {
-//   const { bulan, totalUSDPrice } = item;
-//   const totalTarget = data.target[bulan.toLowerCase()];
-//   const persen = (totalUSDPrice / totalTarget) * 100;
-//   console.log(persen);
-//   result.persen[bulan] = persen;
-//   result = { bulan, persen };
-//   console.log(result);
-// });
-
-// console.log(data);
