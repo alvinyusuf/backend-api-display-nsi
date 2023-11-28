@@ -3,9 +3,9 @@ const targetModel = require('../model/targetModel');
 const response = require('../utils/response');
 
 module.exports = {
-  getMonthly(req, res) {
+  getQmp(req, res) {
     try {
-      targetModel.getMonthlyTarget((err, result) => {
+      targetModel.getQmpTarget((err, result) => {
         if (err) {
           console.error(err);
           return response(200, 16000000, 'data target qmp perbulan tahun ini', res);
@@ -41,6 +41,28 @@ module.exports = {
     } catch (error) {
       console.error(error);
       return response(200, 16000000, 'data target qmp perbulan tahun ini', res);
+    }
+  },
+
+  getMonthly(req, res) {
+    try {
+      const months = [
+        'januari', 'februari', 'maret', 'april', 'mei', 'juni',
+        'juli', 'agustus', 'september', 'oktober', 'november', 'desember',
+      ];
+      const date = new Date();
+      const monthDate = date.getMonth();
+      const month = months[monthDate];
+      targetModel.getMonthlyTarget(month, (err, result) => {
+        if (err) {
+          console.error(err);
+          return response(200, 150000, 'data target qmp perbulan tahun ini', res);
+        }
+        const data = result[0].bulan;
+        return response(200, data, 'data target qmp perbulan tahun ini', res);
+      });
+    } catch (error) {
+      return response(200, 150000, 'data target qmp perbulan tahun ini', res);
     }
   },
 
