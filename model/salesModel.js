@@ -1,5 +1,4 @@
 /* eslint-disable consistent-return */
-// const mssql = require('../services/database/mssqlSales');
 const mssql = require('../services/database/mssql');
 const mysql = require('../services/database/mysql');
 const getFormatDate = require('../utils/productions');

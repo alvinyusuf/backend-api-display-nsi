@@ -7,54 +7,6 @@ module.exports = {
     try {
       const conn = await mssql;
       const now = getFormatDate(new Date());
-
-      // query dibawah diganti karena tidak sesuai
-      // const result = await conn.query(`SELECT
-      //       T0.PostDate,
-      //       CASE
-      //           WHEN T0.U_MIS_NoMesin BETWEEN 'C01' AND 'C50' THEN 'CAM'
-      //           WHEN T0.U_MIS_NoMesin BETWEEN 'B01' AND 'B51' THEN 'LINE1'
-      //           WHEN T0.U_MIS_NoMesin BETWEEN 'B52' AND 'B72'
-      //               OR T0.U_MIS_NoMesin BETWEEN 'D01' AND 'D35'
-      //               OR T0.U_MIS_NoMesin = 'S003' THEN 'LINE2'
-      //           WHEN T0.U_MIS_NoMesin BETWEEN 'A01' AND 'A60' THEN 'LINE3'
-      //       END AS LineType,
-      //       (SUM(T1.IssuedQty) * 1.0 / SUM(T1.PlannedQty)) * 100 AS RataRata
-      //   FROM OWOR T0
-      //   INNER JOIN WOR1 T1 ON T0.[DocEntry] = T1.[DocEntry]
-      //   WHERE
-      //       (
-      //           (T0.U_MIS_NoMesin BETWEEN 'C01' AND 'C50')
-      //           OR
-      //           (T0.U_MIS_NoMesin BETWEEN 'B01' AND 'B51')
-      //           OR
-      //           (T0.U_MIS_NoMesin BETWEEN 'B52' AND 'B72'
-      //           OR T0.U_MIS_NoMesin BETWEEN 'D01' AND 'D35'
-      //           OR T0.U_MIS_NoMesin = 'S003')
-      //           OR
-      //           (T0.U_MIS_NoMesin BETWEEN 'A01' AND 'A60')
-      //       )
-      //       AND
-      //       T0.PostDate >= '${now}' AND T0.PostDate <= '${now}'
-      //       AND
-      //       T0.ItemCode like '%A01'
-      //       AND
-      //       T0.Status not in ('C')
-
-      //   GROUP BY
-      //       T0.PostDate,
-      //       CASE
-      //           WHEN T0.U_MIS_NoMesin BETWEEN 'C01' AND 'C50' THEN 'CAM'
-      //           WHEN T0.U_MIS_NoMesin BETWEEN 'B01' AND 'B51' THEN 'LINE1'
-      //           WHEN T0.U_MIS_NoMesin BETWEEN 'B52' AND 'B72'
-      //               OR T0.U_MIS_NoMesin BETWEEN 'D01' AND 'D35'
-      //               OR T0.U_MIS_NoMesin = 'S003' THEN 'LINE2'
-      //           WHEN T0.U_MIS_NoMesin BETWEEN 'A01' AND 'A60' THEN 'LINE3'
-      //       END
-
-      //   ORDER BY
-      //   T0.PostDate`);
-
       const result = await conn.query(`SELECT T0.PostDate,
       CASE WHEN T0.U_MIS_NoMesin BETWEEN 'C01' AND 'C50' THEN 'CAM'
       WHEN T0.U_MIS_NoMesin BETWEEN 'B01' AND 'B51' THEN 'LINE1'
