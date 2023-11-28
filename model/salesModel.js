@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
-const mssql = require('../services/database/mssqlSales');
+// const mssql = require('../services/database/mssqlSales');
+const mssql = require('../services/database/mssql');
 const mysql = require('../services/database/mysql');
 const getFormatDate = require('../utils/productions');
 
@@ -338,8 +339,8 @@ module.exports = {
 
   async getMonthlyTarget(callback) {
     try {
-      mysql.query(`SELECT januari, februari, maret, april, mei, juni, 
-      juli, agustus, september, oktober, november, desember 
+      mysql.query(`SELECT januari, februari, maret, april, mei, juni,
+      juli, agustus, september, oktober, november, desember
       FROM target_sales WHERE YEAR(tahun) = YEAR(NOW())`, callback);
     } catch (error) {
       console.error(error);
