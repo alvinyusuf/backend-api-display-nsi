@@ -12,7 +12,7 @@ function reconnect() {
     })
     .catch((err) => {
       console.error('Error reconnecting to SQL Server:', err);
-      setTimeout(reconnect, 5000);
+      setTimeout(reconnect, 30000);
     });
 }
 

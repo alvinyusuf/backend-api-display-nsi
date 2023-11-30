@@ -87,8 +87,13 @@ module.exports = {
 
   async salesQmpEmitter(socket) {
     try {
+      let data;
       const actualOnYear = await salesModel.getActualOnYear();
-      const data = actualOnYear[0].totalUSDSales;
+      if (actualOnYear && actualOnYear.length > 0) {
+        data = actualOnYear[0].totalUSDSales;
+      } else {
+        data = { totalUSDSales: 0 };
+      }
       socket.emit('qmpSales', data);
     } catch (error) {
       console.error(error);
