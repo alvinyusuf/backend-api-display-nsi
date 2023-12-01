@@ -44,31 +44,6 @@ module.exports = {
     }
   },
 
-  async getAllLine(req, res) {
-    try {
-      const result = await productionModel.getPercentAllLine();
-      const lengthOfObject = Object.keys(result[0]).length;
-
-      if (!lengthOfObject) {
-        result[0] = [{
-          mcn: null,
-          groupMcn: null,
-          itemCode: null,
-          planQty: null,
-          receiveQty: null,
-          percen: null,
-          wh: null,
-          next: null,
-        }];
-      }
-
-      return response(200, result[0], 'data production semua line hari ini', res);
-    } catch (error) {
-      console.error(error);
-      return response(500, [], 'ada kesalahan di controller', res);
-    }
-  },
-
   async getSpecificLine(req, res) {
     try {
       const { line } = req.params;
@@ -95,7 +70,6 @@ module.exports = {
       }));
 
       return response(200, dataWithIds, `data production permesin di line ${line} hari ini`, res);
-      // return response(200, result[0], `data production permesin di line ${line} hari ini`, res);
     } catch (error) {
       console.error(error);
       return response(500, [], 'ada kesalahan di controller', res);

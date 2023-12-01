@@ -15,7 +15,8 @@ module.exports = {
   getBeforeDowntime(bulan, calback) {
     try {
       mysql.query(`SELECT total_downtime AS totalDowntime, bulan_downtime FROM total_downtimes
-        WHERE MONTH(bulan_downtime) = MONTH(now())-${bulan}`, calback);
+        WHERE MONTH(bulan_downtime) = MONTH(now())-${bulan}
+        AND YEAR(bulan_downtime) = YEAR(now())`, calback);
     } catch (error) {
       console.error(error);
     }

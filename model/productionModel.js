@@ -1,12 +1,13 @@
 /* eslint-disable consistent-return */
 const mssql = require('../services/database/mssql');
-const getFormatDate = require('../utils/productions');
+const getDateNow = require('../utils/getDateNow');
+const getStartAndBeforeDate = require('../utils/getStartAndBeforeDate');
 
 module.exports = {
   async getCurrentPercentProduction() {
     try {
       const conn = await mssql;
-      const now = getFormatDate(new Date());
+      const now = getDateNow();
       const result = await conn.query(`SELECT T0.PostDate,
       CASE WHEN T0.U_MIS_NoMesin BETWEEN 'C01' AND 'C50' THEN 'CAM'
       WHEN T0.U_MIS_NoMesin BETWEEN 'B01' AND 'B51' THEN 'LINE1'
@@ -60,45 +61,10 @@ module.exports = {
     }
   },
 
-  async getPercentAllLine() {
-    try {
-      const conn = await mssql;
-      const now = getFormatDate(new Date());
-      console.log(now);
-
-      const result = await conn.query(`SELECT
-        T0.[U_MIS_NoMesin] as 'mcn',
-        Y.U_MIS_CodeGroup 'groupMsn',
-        T0.[ItemCode] as 'itemCode',
-        T0.[PlannedQty] as 'planQty',
-        T0.[CmpltQty] as 'receiveQty',
-        T0.[CmpltQty]/T0.[PlannedQty] * 100 as 'percen',
-        T0.[Warehouse] as 'wh',
-        T0.[U_MIS_NextProc] as 'next'
-        FROM OWOR T0 LEFT JOIN WOR1 T1 ON T0.[DocEntry] = T1.[DocEntry]
-        LEFT JOIN [@MASTERMESIN] Y on T0.U_MIS_NoMesin = Y.Code
-        cross JOIN (Select SUM(A.CmpltQty) CmpltQty , sum(A.PlannedQty) PlannedQty
-        from OWOR A LEFT JOIN [@MASTERMESIN] Y on A.U_MIS_NoMesin = Y.Code
-        where A.[UserSign] =19 and A.[Warehouse] = 'WHWIPMF1' and A.[Status] not in ('C')
-        and A.[PostDate] >= '${now}' and A.[PostDate] <= '${now}') X
-        WHERE T0.[UserSign] in (19,22,21) and T0.[Warehouse] = 'WHWIPMF1'
-        and T0.[Status] not in ('C') and T0.[PostDate] >= '${now}' and T0.[PostDate] <= '${now}'
-        Group by
-        T0.[U_MIS_NoMesin], Y.U_MIS_CodeGroup, T0.[DocNum], T0.[PostDate],
-        T0.[ItemCode], T0.[PlannedQty], T0.[CmpltQty], T0.[Warehouse],
-        T0.[U_MIS_NextProc], T0.[Status], T0.[UserSign] Order by Y.U_MIS_CodeGroup asc`);
-
-      return result.recordsets;
-    } catch (error) {
-      console.error(error);
-    }
-  },
-
   async getPercentSpecificLine(line) {
     try {
       const conn = await mssql;
-      const now = getFormatDate(new Date());
-
+      const now = getDateNow();
       const result = await conn.query(`SELECT
         T0.[U_MIS_NoMesin] as 'mcn',
         Y.U_MIS_CodeGroup 'groupMsn',
@@ -129,8 +95,7 @@ module.exports = {
   async getPercentHistory() {
     try {
       const conn = await mssql;
-      const now = getFormatDate(new Date(), false, true);
-      const start = getFormatDate(new Date(), true);
+      const { start, now } = getStartAndBeforeDate();
 
       const result = await conn.query(`SELECT T0.PostDate,
       CASE WHEN T0.U_MIS_NoMesin BETWEEN 'C01' AND 'C50' THEN 'CAM'
