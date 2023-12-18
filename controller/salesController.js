@@ -80,6 +80,9 @@ module.exports = {
 
   async getActualOnYear(req, res) {
     try {
+      await new Promise((resolve) => {
+        setTimeout(resolve, 2000);
+      });
       const data = await salesModel.getActualOnYear();
       return response(200, data[0], 'data sales selama satu tahun berjalan', res);
     } catch (error) {
