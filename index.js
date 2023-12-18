@@ -41,6 +41,9 @@ io.on('connection', (socket) => {
   }, 1860000); // 31 menit sekali untuk emit
 
   const emitQmpSales = setInterval(async () => {
+    await new Promise((resolve) => {
+      setTimeout(resolve, 2000);
+    });
     await socketEmitter.salesQmpEmitter(socket);
   }, 1740000); // 29 menit sekali untuk emit
 

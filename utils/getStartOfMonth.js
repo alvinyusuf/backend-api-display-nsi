@@ -1,8 +1,7 @@
 const { DateTime } = require('luxon');
 
-const dt = DateTime.now();
-
 function getStartOfMonth() {
+  const dt = DateTime.now();
   return dt.startOf('month').toISODate();
 }
 

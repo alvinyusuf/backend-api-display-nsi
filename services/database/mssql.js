@@ -11,13 +11,13 @@ function reconnect() {
       console.log('Reconnected to SQL Server');
     })
     .catch((err) => {
-      console.error('Error reconnecting to SQL Server:', err);
+      console.error(`Error connecting to SQL Server at ${new Date()}:`, err);
       setTimeout(reconnect, 30000);
     });
 }
 
 pool.on('error', (err) => {
-  console.error('SQL Server Connection Pool Error:', err);
+  console.error(`Error connecting to SQL Server at ${new Date()}:`, err);
   reconnect();
 });
 
@@ -26,7 +26,7 @@ pool.connect()
     console.log('Connected to SQL Server');
   })
   .catch((err) => {
-    console.error('Error connecting to SQL Server:', err);
+    console.error(`Error connecting to SQL Server at ${new Date()}:`, err);
   });
 
 module.exports = pool;

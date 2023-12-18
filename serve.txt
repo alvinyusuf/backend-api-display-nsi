@@ -1,0 +1,3 @@
+npm run start
+npm run dev
+pm2 start index.js --name backend
